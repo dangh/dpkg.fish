@@ -105,11 +105,11 @@ function _dpkg_remove -a pkg
     return 1
   end
   # remove package files
-  while read -z -l f
+  while read -l f
     rm -vf $HOME/.local/$f
   end < $HOME/.config/dpkg/$pkg
   # remove track file
-  rm $HOME/.config/dpkg/$pkg
+  rm -vf $HOME/.config/dpkg/$pkg
   # cleanup empty dirs
   find $HOME/.local -type d -empty -delete
 end
