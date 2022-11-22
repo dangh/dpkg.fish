@@ -72,10 +72,7 @@ function _dpkg_install_appimage -a url
     $f --appimage-extract
   "
   # install
-  set -l d $dir/*
-  set -l i (contains -i -- $f $d)
-  set -e d[$i]
-  _dpkg_install_dir $d/squashfs-root/usr
+  _dpkg_install_dir $dir/squashfs-root/usr
 end
 
 function _dpkg_install_dir -a dir
