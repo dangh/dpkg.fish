@@ -93,6 +93,13 @@ function _dpkg_install_dir -a dir
     echo unknown package name!
     return 1
   end
+  # uninstall old version
+  if test -f $HOME/.config/dpkg/$pkg
+    if not _dpkg_remove $pkg 2>/dev/null
+      echo failed to uninstall old version of package $pkg
+      return 1
+    end
+  end
   # install to home dir
   echo
   rsync -avIi $dir/ $HOME/.local/ | grep '>f' | cut -d' ' -f2- | tee $HOME/.config/dpkg/$pkg
