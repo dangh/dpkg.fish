@@ -102,7 +102,9 @@ function _dpkg_install_dir -a dir
   end
   # install to home dir
   echo
-  rsync -avIi $dir/ $HOME/.local/ | grep '>f' | cut -d' ' -f2- | tee $HOME/.config/dpkg/$pkg
+  if not rsync -avIi $dir/ $HOME/.local/ | grep '>f' | cut -d' ' -f2- | tee $HOME/.config/dpkg/$pkg
+    _dpkg_remove $pkg
+  end
   echo
 end
 
