@@ -21,10 +21,16 @@ end
 function _dpkg_install_deb -a url
   # fetch
   set -l dir (mktemp -d)
-  wget -q --show-progress -P $dir $url || exit 1
+  if not wget -q --show-progress -P $dir $url
+    echo failed to download deb package $url
+    exit 1
+  end
   set -l f $dir/*
   # extract
-  command dpkg -x $f $dir/local
+  if not command dpkg -x $f $dir/local
+    echo failed to extract deb package $f
+    exit 1
+  end
   # install
   _dpkg_install_dir $dir/local
 end
@@ -32,10 +38,16 @@ end
 function _dpkg_install_tarball -a url
   # fetch
   set -l dir (mktemp -d)
-  wget -q --show-progress -P $dir $url || exit 1
+  if not wget -q --show-progress -P $dir $url
+    echo failed to download tarball $url
+    exit 1
+  end
   set -l f $dir/*
   # extract
-  command tar -xvf $f -C $dir/local
+  if not command tar -xvf $f -C $dir/local
+    echo failed to extract tarball $f
+    exit 1
+  end
   # install
   _dpkg_install_dir $dir/local
 end
@@ -43,14 +55,20 @@ end
 function _dpkg_install_appimage -a url
   # fetch
   set -l dir (mktemp -d)
-  wget -q --show-progress -P $dir $url || exit 1
+  if not wget -q --show-progress -P $dir $url
+    echo failed to download app image $url
+    exit 1
+  end
   set -l f $dir/*
   # extract
-  fish -c "
+  if not fish -c "
     chmod +x $f
     cd $dir
     $f --appimage-extract
   " > /dev/null
+    echo failed to extract app image $f
+    exit 1
+  end
   # install
   _dpkg_install_dir $dir/squashfs-root/usr
 end
@@ -86,7 +104,7 @@ function _dpkg_install_dir -a dir
 end
 
 function _dpkg_remove -a pkg
-  if ! test -f $HOME/.config/dpkg/$pkg
+  if not test -f $HOME/.config/dpkg/$pkg
     echo package $pkg does not exist!
     exit 1
   end
