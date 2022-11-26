@@ -2,12 +2,12 @@ function dpkg -d 'install package without root'
   argparse -i i/install r/remove -- $argv
   if set -q _flag_install
     for f in $argv
-      switch $f
+      switch (string lower $f)
       case '*.deb'
         _dpkg_install_deb $f
       case '*.tar.gz'
         _dpkg_install_tarball $f
-      case '*.AppImage'
+      case '*.appimage'
         _dpkg_install_appimage $f
       end
     end
